@@ -76,7 +76,7 @@ app.use((err, req, res, next) => {
  */
 
 app
-  .listen(PORT || 3000, function() {
+  .listen(PORT, function() {
     console.info(`Server listening on ${this.address().port}`);
   })
   .on(`error`, err => {
