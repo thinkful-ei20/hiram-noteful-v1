@@ -7,16 +7,8 @@ const app = express();
 app.use(express.static(`public`));
 
 app.get(`/api/notes`, (req, res) => {
-  const notes = data.filter(val => {
-    if (req.query.searchTerm) {
-      return (
-        val.title.toLowerCase().includes(req.query.searchTerm.toLowerCase()) ||
-        val.content.toLowerCase().includes(req.query.searchTerm.toLowerCase())
-      );
-    }
-    return true;
-  });
-  res.json(notes);
+  const searchTerm = req.query.searchTerm;
+  res.json(searchTerm ? data.filter(note => note.title.toLowerCase().includes(searchTerm)) : data);
 });
 
 app.get(`/api/notes/:id`, (req, res) => {
