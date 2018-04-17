@@ -1,35 +1,39 @@
 /* global $ store api */
-'use strict';
+"use strict";
 
-const noteful = (function () {
-
+const noteful = (function() {
   function render() {
-
     const notesList = generateNotesList(store.notes, store.currentNote);
-    $('.js-notes-list').html(notesList);
+    $(".js-notes-list").html(notesList);
 
-    const editForm = $('.js-note-edit-form');
-    editForm.find('.js-note-title-entry').val(store.currentNote.title);
-    editForm.find('.js-note-content-entry').val(store.currentNote.content);
+    const editForm = $(".js-note-edit-form");
+    editForm.find(".js-note-title-entry").val(store.currentNote.title);
+    editForm.find(".js-note-content-entry").val(store.currentNote.content);
   }
 
   /**
    * GENERATE HTML FUNCTIONS
    */
   function generateNotesList(list, currentNote) {
-    const listItems = list.map(item => `
-    <li data-id="${item.id}" class="js-note-element ${currentNote.id === item.id ? 'active' : ''}">
+    const listItems = list.map(
+      item => `
+    <li data-id="${item.id}" class="js-note-element ${
+        currentNote.id === item.id ? "active" : ""
+      }">
       <a href="#" class="name js-note-show-link">${item.title}</a>
       <button class="removeBtn js-note-delete-button">X</button>
-    </li>`);
-    return listItems.join('');
+    </li>`
+    );
+    return listItems.join("");
   }
 
   /**
    * HELPERS
    */
   function getNoteIdFromElement(item) {
-    const id = $(item).closest('.js-note-element').data('id');
+    const id = $(item)
+      .closest(".js-note-element")
+      .data("id");
     return id;
   }
 
@@ -37,7 +41,7 @@ const noteful = (function () {
    * EVENT LISTENERS AND HANDLERS
    */
   function handleNoteItemClick() {
-    $('.js-notes-list').on('click', '.js-note-show-link', event => {
+    $(".js-notes-list").on("click", ".js-note-show-link", event => {
       event.preventDefault();
 
       const noteId = getNoteIdFromElement(event.currentTarget);
@@ -46,49 +50,56 @@ const noteful = (function () {
         store.currentNote = detailsResponse;
         render();
       });
-
     });
   }
 
   function handleNoteSearchSubmit() {
-    $('.js-notes-search-form').on('submit', event => {
+    $(".js-notes-search-form").on("submit", event => {
       event.preventDefault();
 
-      const searchTerm = $('.js-note-search-entry').val();
+      const searchTerm = $(".js-note-search-entry").val();
       store.currentSearchTerm = searchTerm ? { searchTerm } : {};
 
       api.search(store.currentSearchTerm, searchResponse => {
         store.notes = searchResponse;
         render();
       });
-
     });
   }
 
   function handleNoteFormSubmit() {
-    $('.js-note-edit-form').on('submit', function (event) {
+    $(".js-note-edit-form").on("submit", function(event) {
       event.preventDefault();
 
-      console.log('Submit Note, coming soon...');
+      const editForm = $(event.currentTarget);
+      const noteObj = {
+        title: editForm.find(`.js-note-title-entry`).val(),
+        content: editForm.find(`.js-note-content-entry`).val()
+      };
 
+      noteObj.id = store.currentNote.id;
+
+      api.update(noteObj.id, noteObj, updateResponse => {
+        store.currentNote = updateResponse;
+        store.notes = store.notes.map(item => item.id === store.currentNote.id ? store.currentNote : item)
+        render();
+      });
     });
   }
 
   function handleNoteStartNewSubmit() {
-    $('.js-start-new-note-form').on('submit', event => {
+    $(".js-start-new-note-form").on("submit", event => {
       event.preventDefault();
 
-      console.log('Start New Note, coming soon...');
-
+      console.log("Start New Note, coming soon...");
     });
   }
 
   function handleNoteDeleteClick() {
-    $('.js-notes-list').on('click', '.js-note-delete-button', event => {
+    $(".js-notes-list").on("click", ".js-note-delete-button", event => {
       event.preventDefault();
 
-      console.log('Delete Note, coming soon...');
-      
+      console.log("Delete Note, coming soon...");
     });
   }
 
@@ -104,7 +115,6 @@ const noteful = (function () {
   // This object contains the only exposed methods from this module:
   return {
     render: render,
-    bindEventListeners: bindEventListeners,
+    bindEventListeners: bindEventListeners
   };
-
-}());
+})();
