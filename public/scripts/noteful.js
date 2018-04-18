@@ -73,33 +73,51 @@ const noteful = (function() {
 
       const editForm = $(event.currentTarget);
       const noteObj = {
+        id: store.currentNote.id,
         title: editForm.find(`.js-note-title-entry`).val(),
         content: editForm.find(`.js-note-content-entry`).val()
       };
 
-      noteObj.id = store.currentNote.id;
-
-      api.update(noteObj.id, noteObj, updateResponse => {
-        store.currentNote = updateResponse;
-        store.notes = store.notes.map(item => item.id === store.currentNote.id ? store.currentNote : item)
-        render();
-      });
+      if (noteObj.id) {
+        api.update(noteObj.id, noteObj, updateResponse => {
+          store.currentNote = updateResponse;
+          api.search(store.currentSearchTerm, searchResponse => {
+            store.notes = searchResponse;
+            render();
+          });
+          render();
+        });
+      } else {
+        api.create(noteObj, createdNote => {
+          store.currentNote = createdNote;
+          api.search(store.currentSearchTerm, searchResponse => {
+            store.notes = searchResponse;
+            render();
+          });
+        });
+      }
     });
   }
 
   function handleNoteStartNewSubmit() {
     $(".js-start-new-note-form").on("submit", event => {
       event.preventDefault();
-
-      console.log("Start New Note, coming soon...");
+      store.currentNote = {};
+      render();
     });
   }
 
   function handleNoteDeleteClick() {
     $(".js-notes-list").on("click", ".js-note-delete-button", event => {
       event.preventDefault();
-
-      console.log("Delete Note, coming soon...");
+      const noteId = getNoteIdFromElement(event.currentTarget);
+      api.remove(noteId, () => {
+        api.search(store.currentSearchTerm, searchResponse => {
+          store.notes = searchResponse;
+          if (noteId === store.currentNote.id) store.currentNote = {};
+          render();
+        });
+      });
     });
   }
 

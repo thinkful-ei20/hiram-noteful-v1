@@ -2,56 +2,20 @@
 
 // External libraries
 const express = require(`express`);
-// Middleware
-const { requestLogger } = require(`./middleware/logger`);
-// Internal libraries
-const data = require(`./db/notes`);
-const simDB = require(`./db/simDB`);
-// In-Memory Database
-const notes = simDB.initialize(data);
+const morgan = require(`morgan`);
 // Config
 const { PORT } = require(`./config`);
 
 const app = express();
+app.use(morgan(`dev`));
 app.use(express.static(`public`));
-app.use(requestLogger);
 app.use(express.json());
 
 /**
- * Endpoints
+ * Routers
  */
-
-app.get(`/api/notes`, (req, res, next) => {
-  const { searchTerm } = req.query;
-  notes.filter(searchTerm, (err, list) => {
-    if (err) return next(err);
-    res.json(list);
-  });
-});
-
-app.get(`/api/notes/:id`, (req, res, next) => {
-  const note = notes.find(req.params.id, (err, item) => {
-    if (err) return next(err);
-    res.json(item);
-  });
-});
-
-app.put(`/api/notes/:id`, (req, res, next) => {
-  const id = req.params.id;
-
-  const updateObj = {};
-  const updateFields = [`title`, `content`];
-
-  updateFields.forEach(field => {
-    if (field in req.body) updateObj[field] = req.body[field];
-  });
-
-  notes.update(id, updateObj, (err, item) => {
-    if (err) return next(err);
-    if (item) res.json(item);
-    else next();
-  });
-});
+const notesRouter = require(`./routers/notes.router`);
+app.use(`/api`, notesRouter);
 
 /**
  * Errors

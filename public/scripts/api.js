@@ -31,5 +31,24 @@ const api = {
       data: JSON.stringify(obj),
       success: callback,
     })
+  },
+
+  remove: function (id, callback) {
+    $.ajax({
+      type: `DELETE`,
+      url: `/api/notes/${id}`,
+      success: callback,
+    })
+  },
+
+  create: function (noteObj, callback) {
+    $.ajax({
+      type: `POST`,
+      url: `/api/notes`,
+      contentType: `application/json`,
+      dataType: `json`,
+      data: JSON.stringify(noteObj),
+      success: callback,
+    })
   }
 }; 
