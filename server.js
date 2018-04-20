@@ -19,13 +19,13 @@ app.use(`/api`, notesRouter)
  * Errors
  */
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   const err = new Error(`Not found`)
   err.status = 404
   res.status(404).json({ message: `Not Found` })
 })
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   res.status(err.status || 500)
   res.json({
     message: err.message,

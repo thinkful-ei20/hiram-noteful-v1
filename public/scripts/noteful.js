@@ -1,14 +1,13 @@
 /* global $ store api */
-'use strict'
 
 const noteful = (function() {
   function render() {
     const notesList = generateNotesList(store.notes, store.currentNote)
-    $('.js-notes-list').html(notesList)
+    $(`.js-notes-list`).html(notesList)
 
-    const editForm = $('.js-note-edit-form')
-    editForm.find('.js-note-title-entry').val(store.currentNote.title)
-    editForm.find('.js-note-content-entry').val(store.currentNote.content)
+    const editForm = $(`.js-note-edit-form`)
+    editForm.find(`.js-note-title-entry`).val(store.currentNote.title)
+    editForm.find(`.js-note-content-entry`).val(store.currentNote.content)
   }
 
   /**
@@ -18,13 +17,13 @@ const noteful = (function() {
     const listItems = list.map(
       item => `
     <li data-id="${item.id}" class="js-note-element ${
-        currentNote.id === item.id ? 'active' : ''
-      }">
+    currentNote.id === item.id ? `active` : ``
+  }">
       <a href="#" class="name js-note-show-link">${item.title}</a>
       <button class="removeBtn js-note-delete-button">X</button>
     </li>`
     )
-    return listItems.join('')
+    return listItems.join(``)
   }
 
   /**
@@ -32,8 +31,8 @@ const noteful = (function() {
    */
   function getNoteIdFromElement(item) {
     const id = $(item)
-      .closest('.js-note-element')
-      .data('id')
+      .closest(`.js-note-element`)
+      .data(`id`)
     return id
   }
 
@@ -41,7 +40,7 @@ const noteful = (function() {
    * EVENT LISTENERS AND HANDLERS
    */
   function handleNoteItemClick() {
-    $('.js-notes-list').on('click', '.js-note-show-link', event => {
+    $(`.js-notes-list`).on(`click`, `.js-note-show-link`, event => {
       event.preventDefault()
 
       const noteId = getNoteIdFromElement(event.currentTarget)
@@ -54,10 +53,10 @@ const noteful = (function() {
   }
 
   function handleNoteSearchSubmit() {
-    $('.js-notes-search-form').on('submit', event => {
+    $(`.js-notes-search-form`).on(`submit`, event => {
       event.preventDefault()
 
-      const searchTerm = $('.js-note-search-entry').val()
+      const searchTerm = $(`.js-note-search-entry`).val()
       store.currentSearchTerm = searchTerm ? { searchTerm } : {}
 
       api.search(store.currentSearchTerm).then(searchResponse => {
@@ -68,7 +67,7 @@ const noteful = (function() {
   }
 
   function handleNoteFormSubmit() {
-    $('.js-note-edit-form').on('submit', function(event) {
+    $(`.js-note-edit-form`).on(`submit`, function(event) {
       event.preventDefault()
 
       const editForm = $(event.currentTarget)
@@ -105,7 +104,7 @@ const noteful = (function() {
   }
 
   function handleNoteStartNewSubmit() {
-    $('.js-start-new-note-form').on('submit', event => {
+    $(`.js-start-new-note-form`).on(`submit`, event => {
       event.preventDefault()
       store.currentNote = {}
       render()
@@ -113,7 +112,7 @@ const noteful = (function() {
   }
 
   function handleNoteDeleteClick() {
-    $('.js-notes-list').on('click', '.js-note-delete-button', event => {
+    $(`.js-notes-list`).on(`click`, `.js-note-delete-button`, event => {
       event.preventDefault()
       const noteId = getNoteIdFromElement(event.currentTarget)
       api

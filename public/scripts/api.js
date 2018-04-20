@@ -1,20 +1,20 @@
 /* global $ */
-'use strict'
+"use strict"
 
 const api = {
   search: function(query) {
     return $.ajax({
-      type: 'GET',
-      url: '/api/notes/',
-      dataType: 'json',
+      type: `GET`,
+      url: `/api/notes/`,
+      dataType: `json`,
       data: query,
     })
   },
 
   details: function(id) {
     return $.ajax({
-      type: 'GET',
-      dataType: 'json',
+      type: `GET`,
+      dataType: `json`,
       url: `/api/notes/${id}`,
     })
   },
