@@ -1,5 +1,3 @@
-;`use strict`
-
 // External libraries
 const express = require(`express`)
 const morgan = require(`morgan`)
