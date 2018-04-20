@@ -2,8 +2,7 @@
 const express = require(`express`)
 const morgan = require(`morgan`)
 // Config
-const config = require(`./config`)
-const PORT = process.env.PORT || config.PORT
+const { PORT } = require(`./config`)
 
 const app = express()
 app.use(morgan(`dev`))
