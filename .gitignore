@@ -62,3 +62,6 @@ typings/
 
 # my local file history
 .history/
+
+# my local vscode folder
+.vscode/
